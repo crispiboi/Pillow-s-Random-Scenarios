@@ -16,27 +16,50 @@ end
 
 NakedAndAfraid.DifficultyCheck = function()
 	local pl = getPlayer();
+	pillowmod = pl:getModData();
+
+	if ModOptions and ModOptions.getInstance then
+		pillowmod.alwaysdire = PillowModOptions.options.alwaysdire
+		pillowmod.alwaysbrutal = PillowModOptions.options.alwaysbrutal
+	end 
+
 	--1in2 is dire, and 1in4 of those is brutal.
 	if ZombRand(2)+1 == ZombRand(2)+1 
 		then 
-			direstart = true;
-			brutalstart = false;
+			pillowmod.direstart = true;
+			pillowmod.brutalstart = false;
 			if ZombRand(4)+1 == ZombRand(4)+1
-			then brutalstart = true;
-				direstart = false;
+			then pillowmod.brutalstart = true;
+				pillowmod.direstart = false;
 			else print("Normal Start selected");
-				direstart = false;
-				brutalstart = false;
+				pillowmod.direstart = false;
+				pillowmod.brutalstart = false;
 			end
 	end 
 
+	--do override
+	if pillowmod.alwaysdire == true
+		then pillowmod.direstart = true;
+			pillowmod.brutalstart = false;
+	elseif pillowmod.alwaysbrutal == true
+		then pillowmod.brutalstart = true;
+			pillowmod.direstart = false;
+	else end
+
 	--play the sound
-	if direstart then
+	if pillowmod.direstart 
+	and pillowmod.soundplayed == nil 
+	then
  		print("Dire Start selected");
 		pl:playSound("Thunder");
-	elseif brutalstart then
+		pillowmod.soundplayed = true;
+
+	elseif pillowmod.brutalstart 
+	and pillowmod.soundplayed == nil
+	then
 		print("Brutal Start selected");
 		pl:playSound("PlayerDied");
+		pillowmod.soundplayed = true;
 	else end
 
 end--end difficulty check
@@ -54,8 +77,8 @@ local inv = pl:getInventory();
 		print(pl:getHoursSurvived());
 		if getPlayer():getHoursSurvived()<=1 then
 			--initialize some scenario variables
-			wasalarmed = false ;
-			building = pl:getCurrentSquare():getRoom():getBuilding();
+			pillowmod.wasalarmed = false ;
+			pillowmod.building = pl:getCurrentSquare():getRoom():getBuilding();
 			--remove everything
 			pl:clearWornItems();
 		    pl:getInventory():clear();
@@ -81,29 +104,29 @@ NakedAndAfraid.BuildingAlarmCheck = function()
 	--check player's building since they could have left
 	if pl:getCurrentSquare():getRoom() == nil
 		then return
-		else plbuilding = pl:getCurrentSquare():getRoom():getBuilding();
+		else pillowmod.plbuilding = pl:getCurrentSquare():getRoom():getBuilding();
 	end 
 
 	--make sure player isn't outside nor the alarm has not been set and the current building is not the spawn building
 	if (pl:getCurrentSquare():isOutside() == true 
-		or wasalarmed == true )
-		and (plbuilding ~= building)
+		or pillowmod.wasalarmed == true )
+		and (pillowmod.plbuilding ~= pillowmod.building)
 		then return
 		else 
-			plbuilding:getDef():setAlarmed(true);
-			wasalarmed = true;
+			pillowmod.plbuilding:getDef():setAlarmed(true);
+			pillowmod.wasalarmed = true;
 			print("set alarm");
 	end 
 end--building alarm function
 
 NakedAndAfraid.EveryTenMinutes = function()
-	if brutalstart
+	if pillowmod.brutalstart
 		then NakedAndAfraid.BuildingAlarmCheck();
 	else end 
 end -- every 10 mins
 
 NakedAndAfraid.EveryHours = function()
-	if direstart
+	if pillowmod.direstart
 		then NakedAndAfraid.BuildingAlarmCheck();
 	else end 
 end --every hours.

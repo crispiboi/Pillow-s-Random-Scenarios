@@ -16,6 +16,12 @@ end
 LastDitchSecurity.DifficultyCheck = function ()
 local pl = getPlayer();
 pillowmod = pl:getModData();
+
+	if ModOptions and ModOptions.getInstance then
+		pillowmod.alwaysdire = PillowModOptions.options.alwaysdire
+		pillowmod.alwaysbrutal = PillowModOptions.options.alwaysbrutal
+	end 
+
 	--1in2 is dire, and 1in4 of those is brutal.
 	if pillowmod.diffcheckdone == nil
 		and ZombRand(2)+1 == ZombRand(2)+1 
@@ -37,19 +43,67 @@ pillowmod = pl:getModData();
 				pillowmod.direstart = false;
 				pillowmod.brutalstart = false;
 				pillowmod.diffcheckdone = true;
-				pillowmod.difficultymodifier = 1;
+
 
 				print("Normal Start selected");
 	end 
 
+
+
+	--do override
+	if pillowmod.alwaysdire == true
+		then pillowmod.direstart = true;
+			pillowmod.brutalstart = false;
+	elseif pillowmod.alwaysbrutal == true
+		then pillowmod.brutalstart = true;
+			pillowmod.direstart = false;
+	else end
+
+	--assign variables
+	if pillowmod.direstart ==  true
+		then
+			--Dire variables
+			pillowmod.difficultymodifier = 2;
+			pillowmod.spawnvariance = ZombRand(1,25);
+			pillowmod.zombcount = ZombRand(25,100);
+			pillowmod.difficultyloops = 2;
+	elseif pillowmod.brutalstart == true
+		then
+			--Brutal variables
+			pillowmod.difficultymodifier = 3;
+			pillowmod.spawnvariance = ZombRand(1,10);
+			pillowmod.zombcount = ZombRand(50,100);
+			pillowmod.difficultyloops = 3;
+	else
+			--Normal variables
+			pillowmod.difficultymodifier = 1;
+			pillowmod.spawnvariance = ZombRand(1,40);
+			pillowmod.zombcount = ZombRand(10,75);
+			pillowmod.difficultyloops = 1;
+	end
+
+	
+	pillowmod.zombcount = pillowmod.zombcount * pillowmod.difficultymodifier;
+	print("horde params- dire modifier:" .. pillowmod.difficultymodifier .. " zombcount:" .. pillowmod.zombcount .. " difficulty loops:" .. pillowmod.difficultyloops);
+
+
 	--play the sound
-	if pillowmod.direstart then
+	if pillowmod.direstart 
+	and pillowmod.soundplayed == nil 
+	then
  		print("Dire Start selected");
 		pl:playSound("Thunder");
-	elseif pillowmod.brutalstart then
+		pillowmod.soundplayed = true;
+
+	elseif pillowmod.brutalstart 
+	and pillowmod.soundplayed == nil
+	then
 		print("Brutal Start selected");
 		pl:playSound("PlayerDied");
+		pillowmod.soundplayed = true;
 	else end
+
+
 
 
 
@@ -67,6 +121,7 @@ local pl = getPlayer();
 
 		print(pl:getHoursSurvived());
 		if getPlayer():getHoursSurvived()<=1 then
+			LastDitchSecurity.DifficultyCheck();
 
 			local inv = pl:getInventory();
 			local bag = pl:getInventory():AddItem("Base.Bag_DuffelBag");
@@ -154,71 +209,43 @@ local pl = getPlayer();
 			end -- end east stairs
 
 
-			--v2 new hordes
-			--direselect = 1;
-			--direchance = 1;
-			direchance = ZombRand(5)+1;
-			direselect = ZombRand(5)+1;
-			diremodifier = ZombRand(2)+1;
-			direloops = ZombRand(2)+1;
-			zombcount = 50 + ZombRand(50,250);
-			spawnvariance = ZombRand(1,40);
-			print("dire chance =" .. direchance .. " direselect=" .. direselect);
-			print("horde params- dire modifier:" .. diremodifier .. " zombcount:" .. zombcount .. " dire loops:" .. direloops);
 			
 			---outside south stairs 10067x12666
 			-- outside main entrance 10081x12641
 			--outside east stairs 10123x12630
 			--behind east wing 10088x12610
 			--behind west wing 10046x 12632
-			if direchance == direselect then
-				pl:Say("Dire Start Activated")
-				pl:playSound("Thunder");
-				zombcount = zombcount * diremodifier;
-				for i = 0 , direloops do
+			
+				for i = 0 , pillowmod.difficultyloops do
 
-					print("spawn horde outside south stairs size:" .. zombcount)
-					createHordeFromTo(10067, 12666, pl:getX(), pl:getY(), zombcount);
-					createHordeFromTo(10067 +spawnvariance, 12666+spawnvariance, pl:getX(), pl:getY(), zombcount);
-					createHordeFromTo(10067 -spawnvariance, 12666-spawnvariance, pl:getX(), pl:getY(), zombcount);
+					print("spawn horde outside south stairs size:" .. pillowmod.zombcount)
+					createHordeFromTo(10067, 12666, pl:getX(), pl:getY(), pillowmod.zombcount);
+					createHordeFromTo(10067 +pillowmod.spawnvariance, 12666+pillowmod.spawnvariance, pl:getX(), pl:getY(), pillowmod.zombcount);
+					createHordeFromTo(10067 -pillowmod.spawnvariance, 12666-pillowmod.spawnvariance, pl:getX(), pl:getY(), pillowmod.zombcount);
 
-					print("spawn horde outside main entrance size:" .. zombcount)
-					createHordeFromTo(10081, 12641, pl:getX(), pl:getY(), zombcount);
-					createHordeFromTo(10081 +spawnvariance, 12641+spawnvariance, pl:getX(), pl:getY(), zombcount);
-					createHordeFromTo(10081 -spawnvariance, 12641-spawnvariance, pl:getX(), pl:getY(), zombcount);
+					print("spawn horde outside main entrance size:" .. pillowmod.zombcount)
+					createHordeFromTo(10081, 12641, pl:getX(), pl:getY(), pillowmod.zombcount);
+					createHordeFromTo(10081 +pillowmod.spawnvariance, 12641+pillowmod.spawnvariance, pl:getX(), pl:getY(), pillowmod.zombcount);
+					createHordeFromTo(10081 -pillowmod.spawnvariance, 12641-pillowmod.spawnvariance, pl:getX(), pl:getY(), pillowmod.zombcount);
 
-					print("spawn horde outside east stairs size:" .. zombcount)
-					createHordeFromTo(10123, 12630, pl:getX(), pl:getY(), zombcount);
-					createHordeFromTo(10123 +spawnvariance, 12630+spawnvariance, pl:getX(), pl:getY(), zombcount);
-					createHordeFromTo(10123 -spawnvariance, 12630-spawnvariance, pl:getX(), pl:getY(), zombcount);
+					print("spawn horde outside east stairs size:" .. pillowmod.zombcount)
+					createHordeFromTo(10123, 12630, pl:getX(), pl:getY(), pillowmod.zombcount);
+					createHordeFromTo(10123 +pillowmod.spawnvariance, 12630+pillowmod.spawnvariance, pl:getX(), pl:getY(), pillowmod.zombcount);
+					createHordeFromTo(10123 -pillowmod.spawnvariance, 12630-pillowmod.spawnvariance, pl:getX(), pl:getY(), pillowmod.zombcount);
 
-					print("spawn horde behind east wing size:" .. zombcount)
-					createHordeFromTo(10088, 12610, pl:getX(), pl:getY(), zombcount);
-					createHordeFromTo(10088 +spawnvariance, 12610+spawnvariance, pl:getX(), pl:getY(), zombcount);
-					createHordeFromTo(10088 -spawnvariance, 12610-spawnvariance, pl:getX(), pl:getY(), zombcount);
+					print("spawn horde behind east wing size:" .. pillowmod.zombcount)
+					createHordeFromTo(10088, 12610, pl:getX(), pl:getY(), pillowmod.zombcount);
+					createHordeFromTo(10088 +pillowmod.spawnvariance, 12610+pillowmod.spawnvariance, pl:getX(), pl:getY(), pillowmod.zombcount);
+					createHordeFromTo(10088 -pillowmod.spawnvariance, 12610-pillowmod.spawnvariance, pl:getX(), pl:getY(), pillowmod.zombcount);
 
-					print("spawn horde behind west wing size:" .. zombcount)
-					createHordeFromTo(10046, 12632, pl:getX(), pl:getY(), zombcount);
-					createHordeFromTo(10046 +spawnvariance, 12632+spawnvariance, pl:getX(), pl:getY(), zombcount);
-					createHordeFromTo(10046 -spawnvariance, 12632-spawnvariance, pl:getX(), pl:getY(), zombcount);
+					print("spawn horde behind west wing size:" .. pillowmod.zombcount)
+					createHordeFromTo(10046, 12632, pl:getX(), pl:getY(), pillowmod.zombcount);
+					createHordeFromTo(10046 +pillowmod.spawnvariance, 12632+pillowmod.spawnvariance, pl:getX(), pl:getY(), pillowmod.zombcount);
+					createHordeFromTo(10046 -pillowmod.spawnvariance, 12632-pillowmod.spawnvariance, pl:getX(), pl:getY(), pillowmod.zombcount);
 
-
-					spawnvariance = spawnvariance + 25;
+					pillowmod.spawnvariance = pillowmod.spawnvariance + 25;
 				end
-			else
-					spawnvariance = spawnvariance + ZombRand(11) +1;
-					print("spawn horde outside south stairs size:" .. zombcount)
-					createHordeFromTo(10067 +spawnvariance, 12666+spawnvariance, pl:getX(), pl:getY(), zombcount);
-					print("spawn horde outside main entrance size:" .. zombcount)
-					createHordeFromTo(10081 +spawnvariance, 12641+spawnvariance, pl:getX(), pl:getY(), zombcount);
-					print("spawn horde outside east stairs size:" .. zombcount)
-					createHordeFromTo(10123 -spawnvariance, 12630-spawnvariance, pl:getX(), pl:getY(), zombcount);
-					print("spawn horde behind east wing size:" .. zombcount)
-					createHordeFromTo(10088 -spawnvariance, 12610-spawnvariance, pl:getX(), pl:getY(), zombcount);
-					print("spawn horde behind west wing size:" .. zombcount)
-					createHordeFromTo(10046 -spawnvariance, 12632-spawnvariance, pl:getX(), pl:getY(), zombcount);
 
-			end
 			
 			addSound(getPlayer(), getPlayer():getX(), getPlayer():getY(), 0, 500, 500); 
 		else end	

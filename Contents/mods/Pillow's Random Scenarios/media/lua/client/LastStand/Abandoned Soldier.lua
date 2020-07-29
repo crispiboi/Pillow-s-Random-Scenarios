@@ -14,15 +14,19 @@ Events.OnCreatePlayer.Add(AbandonedSoldier.DireCheck);
 
 end
 
-AbandonedSoldier.DireCheck = function()
-			if direchance == direselect then
-				pl:Say("Dire Start Activated")
-			else end
-end
+
 
 AbandonedSoldier.DifficultyCheck = function()
 local pl = getPlayer();
 pillowmod = pl:getModData();
+
+	if ModOptions and ModOptions.getInstance then
+		--ModOptions:getInstance(SETTINGS)
+		pillowmod.alwaysdire = PillowModOptions.options.alwaysdire
+		pillowmod.alwaysbrutal = PillowModOptions.options.alwaysbrutal
+	end 
+
+
 	--1in2 is dire, and 1in4 of those is brutal.
 	if pillowmod.diffcheckdone == nil
 		and ZombRand(2)+1 == ZombRand(2)+1 
@@ -31,18 +35,14 @@ pillowmod = pl:getModData();
 			pillowmod.direstart = true;
 			pillowmod.brutalstart = false;
 			pillowmod.diffcheckdone = true;
-			pillowmod.difficultymodifier = ZombRand(4)+1;
-			pillowmod.difficultyloops = ZombRand(4)+1;
-			pillowmod.zombcount = 50 + ZombRand(100);
+
 			--check dire start and make it brutal 1 in 4
 			if ZombRand(4)+1 == ZombRand(4)+1
 			then 
 				pillowmod.brutalstart = true;
 				pillowmod.direstart = false;
 				pillowmod.diffcheckdone = true;
-				pillowmod.difficultymodifier = ZombRand(6)+1;
-				pillowmod.difficultyloops = ZombRand(6)+1;
-				pillowmod.zombcount = 50 + ZombRand(200);
+
 			else 
 				pillowmod.brutalstart = false;
 			end
@@ -50,19 +50,51 @@ pillowmod = pl:getModData();
 				pillowmod.direstart = false;
 				pillowmod.brutalstart = false;
 				pillowmod.diffcheckdone = true;
-				pillowmod.difficultymodifier = 1;
-				pillowmod.difficultyloops = 1;
-				pillowmod.zombcount = 50 ;
 				print("Normal Start selected");
 	end 
 
+	if pillowmod.alwaysdire == true
+		then pillowmod.direstart = true;
+			pillowmod.brutalstart = false;
+	elseif pillowmod.alwaysbrutal == true
+		then pillowmod.brutalstart = true;
+			pillowmod.direstart = false;
+	else end
+
+	if pillowmod.direstart == true
+		then
+			--dire variables
+			pillowmod.difficultymodifier = ZombRand(4)+1;
+			pillowmod.difficultyloops = ZombRand(4)+1;
+			pillowmod.zombcount = 50 + ZombRand(100);
+	elseif pillowmod.brutalstart == true
+		then
+			--brutal variables
+			pillowmod.difficultymodifier = ZombRand(6)+1;
+			pillowmod.difficultyloops = ZombRand(6)+1;
+			pillowmod.zombcount = 50 + ZombRand(200);
+	else
+			pillowmod.difficultymodifier = 1;
+			pillowmod.difficultyloops = 1;
+			pillowmod.zombcount = 50 ;
+	end	
+
+
+
 	--play the sound
-	if pillowmod.direstart then
+	if pillowmod.direstart 
+	and pillowmod.soundplayed == nil 
+	then
  		print("Dire Start selected");
 		pl:playSound("Thunder");
-	elseif pillowmod.brutalstart then
+		pillowmod.soundplayed = true;
+
+	elseif pillowmod.brutalstart 
+	and pillowmod.soundplayed == nil
+	then
 		print("Brutal Start selected");
 		pl:playSound("PlayerDied");
+		pillowmod.soundplayed = true;
 	else end
 
 	print("horde params- difficulty modifier:" .. pillowmod.difficultymodifier  .. " zombcount:" .. pillowmod.zombcount .. " dire loops:" .. pillowmod.difficultyloops);

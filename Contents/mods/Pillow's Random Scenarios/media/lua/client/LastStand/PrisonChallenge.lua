@@ -18,6 +18,12 @@ end
 PrisonChallenge.DifficultyCheck = function()
 	local pl = getPlayer();
 	pillowmod = pl:getModData();
+
+	if ModOptions and ModOptions.getInstance then
+		pillowmod.alwaysdire = PillowModOptions.options.alwaysdire
+		pillowmod.alwaysbrutal = PillowModOptions.options.alwaysbrutal
+	end 
+
 	--1in2 is dire, and 1in4 of those is brutal.
 	if pillowmod.diffcheckdone == nil
 		and ZombRand(2)+1 == ZombRand(2)+1 
@@ -38,28 +44,52 @@ PrisonChallenge.DifficultyCheck = function()
 				pillowmod.diffcheckdone = true;
 	end 
 
+	--do override
+	if pillowmod.alwaysdire == true
+		then pillowmod.direstart = true;
+			pillowmod.brutalstart = false;
+	elseif pillowmod.alwaysbrutal == true
+		then pillowmod.brutalstart = true;
+			pillowmod.direstart = false;
+	else end
+
+	if pillowmod.direstart == true
+		then 
+			--dire variables
+			pillowmod.extrazombs = ZombRand(50,150);
+			pillowmod.difficultyloops = ZombRand(3)+1;
+			pillowmod.alarmcounter = 3;
+			pillowmod.spawnincellchance = ZombRand(1,3);
+	elseif pillowmod.brutalstart == true
+		then
+			--brtual variables
+			pillowmod.extrazombs = ZombRand(100,200);
+			pillowmod.difficultyloops = ZombRand(6)+1;
+			pillowmod.alarmcounter = 1;
+			pillowmod.spawnincellchance = ZombRand(1,2);
+	else
+			--normal variables
+			pillowmod.extrazombs = 0;
+			pillowmod.difficultyloops = 1;
+			pillowmod.alarmcounter = ZombRand(5,20);
+			pillowmod.spawnincellchance = ZombRand(1,4);
+	end
+
 	--play the sound
-	if pillowmod.direstart then
+	if pillowmod.direstart 
+	and pillowmod.soundplayed == nil 
+	then
  		print("Dire Start selected");
 		pl:playSound("Thunder");
-		pillowmod.extrazombs = ZombRand(50,150);
-		pillowmod.difficultyloops = ZombRand(3)+1;
-		pillowmod.alarmcounter = 3;
-		pillowmod.spawnincellchance = ZombRand(1,3);
-	elseif pillowmod.brutalstart then
+		pillowmod.soundplayed = true;
+
+	elseif pillowmod.brutalstart 
+	and pillowmod.soundplayed == nil
+	then
 		print("Brutal Start selected");
 		pl:playSound("PlayerDied");
-		pillowmod.extrazombs = ZombRand(100,200);
-		pillowmod.difficultyloops = ZombRand(6)+1;
-		pillowmod.alarmcounter = 1;
-		pillowmod.spawnincellchance = ZombRand(1,2);
-	else
-		print("Normal Start selected");
-		pillowmod.extrazombs = 0;
-		pillowmod.difficultyloops = 1;
-		pillowmod.alarmcounter = ZombRand(5,20);
-		pillowmod.spawnincellchance = ZombRand(1,4);
-	 end
+		pillowmod.soundplayed = true;
+	else end
 
 	print("Params -difficultyloops:" .. pillowmod.difficultyloops .. " spawn in cell chance:" .. pillowmod.spawnincellchance .. "alarmcounter:" .. pillowmod.alarmcounter);
 	pillowmod.wasalarmed = false;

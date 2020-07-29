@@ -15,83 +15,113 @@ end
 
 TheLastFlight.DifficultyCheck = function()
 	local pl = getPlayer();
+	pillowmod = pl:getModData();
+
+
+	if ModOptions and ModOptions.getInstance then
+		pillowmod.alwaysdire = PillowModOptions.options.alwaysdire
+		pillowmod.alwaysbrutal = PillowModOptions.options.alwaysbrutal
+	end 
+
 	--1in2 is dire, and 1in4 of those is brutal.
-	if diffcheckdone == nil
+	if pillowmod.diffcheckdone == nil
 		and ZombRand(2)+1 == ZombRand(2)+1 
 		then 
 			--dire start settings
-			direstart = true;
-			brutalstart = false;
-			diffcheckdone = true;
-			supplychance = 4 ;
-			supplymax = 3;
-			medsupplychance = 2;
-			medsupplymax = 3;
-			injuryloops = ZombRand(2,8);
-			injuryharshnesschance = ZombRand(1,4);
-			injurymodifier = ZombRand(5,10);
-			fracturecount = 0;
-			totalinjurytime = ZombRand(5,40);
-			totalbleedtime = ZombRand(5,40);
-			--calculate average bleedtime/injurytime for injuries so the player has a better chance
-
-			--end dire start settings
-
+			pillowmod.direstart = true;
+			pillowmod.brutalstart = false;
+			pillowmod.diffcheckdone = true;
 			--check dire start and make it brutal 1 in 4
 			if ZombRand(4)+1 == ZombRand(4)+1
-			then brutalstart = true;
-				direstart = false;
-				diffcheckdone = true;
-				supplychance = 6 ;
-				medsupplychance = 3;
-				supplymax = 2;
-				medsupplymax  =2;
-				injuryloops = ZombRand(4,8);
-				injuryharshnesschance = ZombRand(1,3);
-				injurymodifier = ZombRand(5,10);
-				fracturecount = 0;
-				totalinjurytime = ZombRand(5,40);
-				totalbleedtime = ZombRand(5,40);
+			then pillowmod.brutalstart = true;
+				pillowmod.direstart = false;
+				pillowmod.diffcheckdone = true;
 				--end brutal start settings
 			else 
-				brutalstart = false;
+				pillowmod.brutalstart = false;
 			end
 
 		else 
-				direstart = false;
-				brutalstart = false;
-				diffcheckdone = true;
+				pillowmod.direstart = false;
+				pillowmod.brutalstart = false;
+				pillowmod.diffcheckdone = true;
 				print("Normal Start selected");
-				supplychance = 3 ;
-				medsupplychance = 1;
-				supplymax = 4;
-				medsupplymax  =3;
-				injuryloops = ZombRand(2,5);
-				injuryharshnesschance = ZombRand(1,8);
-				injurymodifier = 0;
-				fracturecount = 0;
-				totalinjurytime = ZombRand(5,40);
-				totalbleedtime = ZombRand(5,40);
-				--calculate average bleedtime/injurytime for injuries so the player has a better chance
 	end 
 
-	--calculate universal stuff
-	avginjurytime = (totalinjurytime + injurymodifier) / injuryloops ;
-	avgbleedtime  = (totalbleedtime + injurymodifier) / injuryloops ;
+	--do override
+	if pillowmod.alwaysdire == true
+		then pillowmod.direstart = true;
+			pillowmod.brutalstart = false;
+	elseif pillowmod.alwaysbrutal == true
+		then pillowmod.brutalstart = true;
+			pillowmod.direstart = false;
+	else end
 
-	--play the sound
-	if direstart then
- 		print("Dire Start selected");
-		pl:playSound("Thunder");
-	elseif brutalstart then
-		print("Brutal Start selected");
-		pl:playSound("PlayerDied");
+	if pillowmod.direstart == true
+		then
+			--dire variables
+			pillowmod.supplychance = 4 ;
+			pillowmod.supplymax = 3;
+			pillowmod.medsupplychance = 2;
+			pillowmod.medsupplymax = 3;
+			pillowmod.injuryloops = ZombRand(2,8);
+			pillowmod.injuryharshnesschance = ZombRand(1,4);
+			pillowmod.injurymodifier = ZombRand(5,10);
+			pillowmod.fracturecount = 0;
+			pillowmod.totalinjurytime = ZombRand(5,40);
+			pillowmod.totalbleedtime = ZombRand(5,40);
+	elseif pillowmod.brutalstart == true
+		then
+			--brtual variables
+			pillowmod.supplychance = 6 ;
+			pillowmod.medsupplychance = 3;
+			pillowmod.supplymax = 2;
+			pillowmod.medsupplymax  =2;
+			pillowmod.injuryloops = ZombRand(4,8);
+			pillowmod.injuryharshnesschance = ZombRand(1,3);
+			pillowmod.injurymodifier = ZombRand(5,10);
+			pillowmod.fracturecount = 0;
+			pillowmod.totalinjurytime = ZombRand(5,40);
+			pillowmod.totalbleedtime = ZombRand(5,40);
 	else
-
+			--normal variables
+			pillowmod.supplychance = 3 ;
+			pillowmod.medsupplychance = 1;
+			pillowmod.supplymax = 4;
+			pillowmod.medsupplymax  =3;
+			pillowmod.injuryloops = ZombRand(2,5);
+			pillowmod.injuryharshnesschance = ZombRand(1,8);
+			pillowmod.injurymodifier = 0;
+			pillowmod.fracturecount = 0;
+			pillowmod.totalinjurytime = ZombRand(5,40);
+			pillowmod.totalbleedtime = ZombRand(5,40);
 	end
 
-	print("injury loops:" .. injuryloops .. " injurymodifier:" .. injurymodifier .. " injuryharshnesschance:" .. injuryharshnesschance);
-	print("avgbleedtime:" .. avgbleedtime .. " totalinjurytime:" .. avginjurytime);
+
+
+	--calculate universal stuff
+	--calculate average bleedtime/injurytime for injuries so the player has a better chance
+	pillowmod.avginjurytime = (pillowmod.totalinjurytime + pillowmod.injurymodifier) / pillowmod.injuryloops ;
+	pillowmod.avgbleedtime  = (pillowmod.totalbleedtime + pillowmod.injurymodifier) / pillowmod.injuryloops ;
+
+	--play the sound
+	if pillowmod.direstart 
+	and pillowmod.soundplayed == nil 
+	then
+ 		print("Dire Start selected");
+		pl:playSound("Thunder");
+		pillowmod.soundplayed = true;
+
+	elseif pillowmod.brutalstart 
+	and pillowmod.soundplayed == nil
+	then
+		print("Brutal Start selected");
+		pl:playSound("PlayerDied");
+		pillowmod.soundplayed = true;
+	else end
+
+	print("injury loops:" .. pillowmod.injuryloops .. " injurymodifier:" .. pillowmod.injurymodifier .. " injuryharshnesschance:" .. pillowmod.injuryharshnesschance);
+	print("avgbleedtime:" .. pillowmod.avgbleedtime .. " totalinjurytime:" .. pillowmod.avginjurytime);
 
 
 
@@ -181,8 +211,7 @@ local pl = getPlayer();
 
 			--up to 4 rounds of giving clips
 			for i=1 , 2 do
-				local giveit = ZombRand(2)+1 ;
-				if giveit == 1 then 	
+				if ZombRand(2)+1  == ZombRand(2)+1  then 	
 					inv:AddItem("Base.9mmClip"):setCurrentAmmoCount(15);
 				end
 			end
@@ -202,16 +231,16 @@ local pl = getPlayer();
 			
 			--fill bag with stuff randomly.
 			for i , item in pairs(TheLastFlight.supplies) do
-				if ZombRand(supplychance)+1 == 1 then 
-					local amt = ZombRand(supplymax) + 1;
+				if ZombRand(pillowmod.supplychance)+1 == 1 then 
+					local amt = ZombRand(pillowmod.supplymax) + 1;
 					bag:getItemContainer():AddItems(item,amt);
 				end
 			end
 
 			--fill medkit
 			for i , item in pairs(TheLastFlight.medsupplies) do
-				if ZombRand(medsupplychance)+1 == 1 then 
-					local amt = ZombRand(medsupplymax) + 1;
+				if ZombRand(pillowmod.medsupplychance)+1 == 1 then 
+					local amt = ZombRand(pillowmod.medsupplymax) + 1;
 					kit:getItemContainer():AddItems(item,amt);
 				end
 			end
@@ -222,21 +251,21 @@ local pl = getPlayer();
 			--do injury after dire calc so I can use the values from it
 
 
-			for i = 0 , injuryloops do 
+			for i = 0 , pillowmod.injuryloops do 
 				injury = ZombRand(5)+1;
 				local bodypart = ZombRand(BodyPartType.ToIndex(BodyPartType.MAX)-1);
 				print(BodyPartType.FromIndex(bodypart));
 				-- burned
 				if injury == 1 then 
-					pl:getBodyDamage():getBodyPart(BodyPartType.FromIndex(bodypart)):setBurnTime(avginjurytime);
+					pl:getBodyDamage():getBodyPart(BodyPartType.FromIndex(bodypart)):setBurnTime(pillowmod.avginjurytime);
 					print("burning ");
 				end --end burned
 
 				--deepwound
 				if injury == 2 then 
 					pl:getBodyDamage():getBodyPart(BodyPartType.FromIndex(bodypart)):setDeepWounded(true);
-					pl:getBodyDamage():getBodyPart(BodyPartType.FromIndex(bodypart)):setDeepWoundTime(avginjurytime);
-					pl:getBodyDamage():getBodyPart(BodyPartType.FromIndex(bodypart)):setBleedingTime(avgbleedtime);
+					pl:getBodyDamage():getBodyPart(BodyPartType.FromIndex(bodypart)):setDeepWoundTime(pillowmod.avginjurytime);
+					pl:getBodyDamage():getBodyPart(BodyPartType.FromIndex(bodypart)):setBleedingTime(pillowmod.avgbleedtime);
 					print("deep wound ");
 					if injuryharshnesschance == 1 then 
 						pl:getBodyDamage():getBodyPart(BodyPartType.FromIndex(bodypart)):setHaveGlass(true);
@@ -245,23 +274,23 @@ local pl = getPlayer();
 				end  --end deepwound
 
 				--fracture, but not too harsh
-				if injury == 3 and fracturecount <= 2 then
+				if injury == 3 and pillowmod.fracturecount <= 2 then
 					--fractures dont kill as fast so leave this calc as rand
-					pl:getBodyDamage():getBodyPart(BodyPartType.FromIndex(bodypart)):setFractureTime(ZombRand(5,20)+injurymodifier);
+					pl:getBodyDamage():getBodyPart(BodyPartType.FromIndex(bodypart)):setFractureTime(ZombRand(5,20)+pillowmod.injurymodifier);
 					print("fracture");
-					print("fracture count:" .. fracturecount)
+					print("fracture count:" .. pillowmod.fracturecount)
 				end  -- endfracture
 
 				-- scratch 
 				if injury == 4 then 
 					if  injuryharshnesschance == 2 then 
 						pl:getBodyDamage():getBodyPart(BodyPartType.FromIndex(bodypart)):SetScratchedWindow(true);
-						pl:getBodyDamage():getBodyPart(BodyPartType.FromIndex(bodypart)):setBleedingTime(avgbleedtime);
+						pl:getBodyDamage():getBodyPart(BodyPartType.FromIndex(bodypart)):setBleedingTime(pillowmod.avgbleedtime);
 						print("scratch window ");
 					else 
 						print("cut weapon ");
 						pl:getBodyDamage():getBodyPart(BodyPartType.FromIndex(bodypart)):SetScratchedWeapon(true);
-						pl:getBodyDamage():getBodyPart(BodyPartType.FromIndex(bodypart)):setBleedingTime(avgbleedtime);
+						pl:getBodyDamage():getBodyPart(BodyPartType.FromIndex(bodypart)):setBleedingTime(pillowmod.avgbleedtime);
 					end
 
 				end --end scratch
@@ -269,8 +298,8 @@ local pl = getPlayer();
 				if injury == 5 then --cut 
 					print("cut  ");
 					pl:getBodyDamage():getBodyPart(BodyPartType.FromIndex(bodypart)):setCut(true);
-					pl:getBodyDamage():getBodyPart(BodyPartType.FromIndex(bodypart)):setCutTime(avginjurytime);
-					pl:getBodyDamage():getBodyPart(BodyPartType.FromIndex(bodypart)):setBleedingTime(avgbleedtime);
+					pl:getBodyDamage():getBodyPart(BodyPartType.FromIndex(bodypart)):setCutTime(pillowmod.avginjurytime);
+					pl:getBodyDamage():getBodyPart(BodyPartType.FromIndex(bodypart)):setBleedingTime(pillowmod.avgbleedtime);
 				end -- end cut
 
 			end -- end dire loops

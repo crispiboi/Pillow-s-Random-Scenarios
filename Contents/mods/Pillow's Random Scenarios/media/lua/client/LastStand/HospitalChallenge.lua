@@ -1,3 +1,5 @@
+--require "PillowsRandomScenarios.lua"
+
 HospitalChallenge = {}
 
 HospitalChallenge.Add = function()
@@ -13,49 +15,83 @@ end
 HospitalChallenge.DifficultyCheck = function()
 	local pl = getPlayer();
 	pillowmod = pl:getModData();
+
+	if ModOptions and ModOptions.getInstance then
+		pillowmod.alwaysdire = PillowModOptions.options.alwaysdire
+		pillowmod.alwaysbrutal = PillowModOptions.options.alwaysbrutal
+	end 
+
+
 	--1in2 is dire, and 1in4 of those is brutal.
 	if pillowmod.diffcheckdone == nil
-		and ZombRand(2)+1 == ZombRand(2)+1 
+		and ZombRand(2)+1 == ZombRand(2)+1
 		then 
-			--dire variables
 			pillowmod.direstart = true;
 			pillowmod.brutalstart = false;
 			pillowmod.diffcheckdone = true;
-			pillowmod.difficultymodifier = ZombRand(5,10);
-			pillowmod.injurytimemodifier = ZombRand(10,20);
-			pillowmod.drunkmodifier = 25;
-			if ZombRand(4)+1 == ZombRand(4)+1
+			if  ZombRand(4)+1 == ZombRand(4)+1
 			then
-				--brutal variables
 			 	pillowmod.brutalstart = true;
 				pillowmod.direstart = false;
 				pillowmod.diffcheckdone = true;
-				pillowmod.difficultymodifier = ZombRand(10,20);
-				pillowmod.injurytimemodifier = ZombRand(10,30);
-				pillowmod.drunkmodifier = 50;
 			else 
 				pillowmod.brutalstart = false;
 			end
 		else 
-				--normal variables
 				pillowmod.direstart = false;
 				pillowmod.brutalstart = false;
 				pillowmod.diffcheckdone = true;
-				pillowmod.difficultymodifier = 0;
-				pillowmod.injurytimemodifier = 0;
-				pillowmod.drunkmodifier = 0;
 				print("Normal Start selected");
 	end 
 
+	--do override
+	if pillowmod.alwaysdire == true
+		then pillowmod.direstart = true;
+			pillowmod.brutalstart = false;
+	elseif pillowmod.alwaysbrutal == true
+		then pillowmod.brutalstart = true;
+			pillowmod.direstart = false;
+	else end
+
+
+	--change to do dire roll, then assign variables. This where override always dire/brutal.
+	if pillowmod.direstart == true
+		then
+			--dire variables
+			pillowmod.brutalstart = false;
+			pillowmod.difficultymodifier = ZombRand(5,10);
+			pillowmod.injurytimemodifier = ZombRand(10,20);
+			pillowmod.drunkmodifier = 25;
+	elseif  pillowmod.brutalstart == true
+		then
+			--brutal variables
+			pillowmod.direstart = false;
+			pillowmod.difficultymodifier = ZombRand(10,20);
+			pillowmod.injurytimemodifier = ZombRand(10,30);
+			pillowmod.drunkmodifier = 50;
+	else
+			--normal variables
+			pillowmod.difficultymodifier = 0;
+			pillowmod.injurytimemodifier = 0;
+			pillowmod.drunkmodifier = 0;
+	end
+
+
+
 	--play the sound
-	if pillowmod.direstart then
+	if pillowmod.direstart 
+	and pillowmod.soundplayed == nil 
+	then
  		print("Dire Start selected");
 		pl:playSound("Thunder");
+		pillowmod.soundplayed = true;
 
-	elseif pillowmod.brutalstart then
+	elseif pillowmod.brutalstart 
+	and pillowmod.soundplayed == nil
+	then
 		print("Brutal Start selected");
 		pl:playSound("PlayerDied");
-
+		pillowmod.soundplayed = true;
 	else end
 
 

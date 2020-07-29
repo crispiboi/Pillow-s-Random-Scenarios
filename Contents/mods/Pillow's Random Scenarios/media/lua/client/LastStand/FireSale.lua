@@ -22,6 +22,13 @@ FireSale.DifficultyCheck = function()
 	print("run difficulty check");
 	local pl = getPlayer();
 	pillowmod = pl:getModData();
+
+	if ModOptions and ModOptions.getInstance then
+		--ModOptions:getInstance(SETTINGS)
+		pillowmod.alwaysdire = PillowModOptions.options.alwaysdire
+		pillowmod.alwaysbrutal = PillowModOptions.options.alwaysbrutal
+	end 
+
 	--1in2 is dire, and 1in4 of those is brutal.
 	if pillowmod.diffcheckdone == nil 
 		--direstart variables
@@ -30,67 +37,83 @@ FireSale.DifficultyCheck = function()
 			pillowmod.direstart = true;
 			pillowmod.brutalstart = false;
 			pillowmod.diffcheckdone = true;
-			pillowmod.statmod = 0.1 ;
-			pillowmod.wasalarmed = false;
-			pillowmod.alarmchance = 4;
-			pillowmod.alarmdecrement = 0;
-			pillowmod.northentranceseen = false;
-			pillowmod.southentranceseen = false;
-			pillowmod.eastentranceseen = false;
-			pillowmod.utilityentrance1seen = false;
-			pillowmod.utilityentrance2seen = false;
-			pillowmod.utilityentrance3seen = false;
-			pillowmod.utilityentrance4seen = false;
-			pillowmod.utilityentrance5seen = false;
-			pillowmod.utilityentrance6seen = false;
-			pillowmod.safeexit= ZombRand(6)+1 ;
-
 			--brutal start variables
 			if ZombRand(4)+1 == ZombRand(4)+1
 			then pillowmod.brutalstart = true;
 				pillowmod.direstart = false;
 				pillowmod.diffcheckdone = true;
-
-				pillowmod.statmod = 0.2 ; 
-				pillowmod.wasalarmed = false;
-				pillowmod.alarmchance = 4;
-				pillowmod.alarmdecrement = 0;
-				pillowmod.northentranceseen = false;
-				pillowmod.southentranceseen = false;
-				pillowmod.eastentranceseen = false;
-				pillowmod.utilityentrance1seen = false;
-				pillowmod.utilityentrance2seen = false;
-				pillowmod.utilityentrance3seen = false;
-				pillowmod.utilityentrance4seen = false;
-				pillowmod.utilityentrance5seen = false;
-				pillowmod.utilityentrance6seen = false;
-				pillowmod.safeexit= ZombRand(6)+1 ;
 			else
 			end
-
 		else print("Normal Start selected");
 			--normal variables
 			pillowmod.direstart = false;
 			pillowmod.brutalstart = false;
 			pillowmod.diffcheckdone = true;
-			pillowmod.statmod = 0;
-			pillowmod.wasalarmed = false;
-			pillowmod.alarmchance = 4;
-			pillowmod.alarmdecrement = 0;
-			pillowmod.northentranceseen = false;
-			pillowmod.southentranceseen = false;
-			pillowmod.eastentranceseen = false;
-			pillowmod.utilityentrance1seen = false;
-			pillowmod.utilityentrance2seen = false;
-			pillowmod.utilityentrance3seen = false;
-			pillowmod.utilityentrance4seen = false;
-			pillowmod.utilityentrance5seen = false;
-			pillowmod.utilityentrance6seen = false;
-			pillowmod.safeexit= ZombRand(6)+1 ;
 	end 
 
-	print("safe exit number:" .. pillowmod.safeexit );
 
+
+	if pillowmod.alwaysdire == true
+		then pillowmod.direstart = true;
+			pillowmod.brutalstart = false;
+	elseif pillowmod.alwaysbrutal == true
+		then pillowmod.brutalstart = true;
+			pillowmod.direstart = false;
+	else end
+
+	if pillowmod.direstart == true
+		then
+		--dire variables
+		pillowmod.statmod = 0.1 ;
+		pillowmod.wasalarmed = false;
+		pillowmod.alarmchance = 4;
+		pillowmod.alarmdecrement = 0;
+		pillowmod.northentranceseen = false;
+		pillowmod.southentranceseen = false;
+		pillowmod.eastentranceseen = false;
+		pillowmod.utilityentrance1seen = false;
+		pillowmod.utilityentrance2seen = false;
+		pillowmod.utilityentrance3seen = false;
+		pillowmod.utilityentrance4seen = false;
+		pillowmod.utilityentrance5seen = false;
+		pillowmod.utilityentrance6seen = false;
+		pillowmod.safeexit= ZombRand(6)+1 ;
+	elseif pillowmod.brutalstart
+		then
+		--brtual variables
+		pillowmod.statmod = 0.2 ; 
+		pillowmod.wasalarmed = false;
+		pillowmod.alarmchance = 4;
+		pillowmod.alarmdecrement = 0;
+		pillowmod.northentranceseen = false;
+		pillowmod.southentranceseen = false;
+		pillowmod.eastentranceseen = false;
+		pillowmod.utilityentrance1seen = false;
+		pillowmod.utilityentrance2seen = false;
+		pillowmod.utilityentrance3seen = false;
+		pillowmod.utilityentrance4seen = false;
+		pillowmod.utilityentrance5seen = false;
+		pillowmod.utilityentrance6seen = false;
+		pillowmod.safeexit= ZombRand(6)+1 ;			
+	else
+		--normal variables
+		pillowmod.statmod = 0;
+		pillowmod.wasalarmed = false;
+		pillowmod.alarmchance = 4;
+		pillowmod.alarmdecrement = 0;
+		pillowmod.northentranceseen = false;
+		pillowmod.southentranceseen = false;
+		pillowmod.eastentranceseen = false;
+		pillowmod.utilityentrance1seen = false;
+		pillowmod.utilityentrance2seen = false;
+		pillowmod.utilityentrance3seen = false;
+		pillowmod.utilityentrance4seen = false;
+		pillowmod.utilityentrance5seen = false;
+		pillowmod.utilityentrance6seen = false;
+		pillowmod.safeexit= ZombRand(6)+1 ;
+	end
+	
+	print("safe exit number:" .. pillowmod.safeexit );
 
 
 
