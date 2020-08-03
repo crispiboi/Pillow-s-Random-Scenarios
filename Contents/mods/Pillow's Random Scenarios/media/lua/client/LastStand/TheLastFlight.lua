@@ -205,7 +205,7 @@ local pl = getPlayer();
 			inv:AddItem("Base.Lighter");
 			inv:AddItem("Base.KeyRing");
 			inv:AddItem("Base.Torch");
-			inv:AddItem("Base.DigitalWatch2");
+			inv:AddItem("WristWatch_Left_DigitalBlack");
 
 
 
