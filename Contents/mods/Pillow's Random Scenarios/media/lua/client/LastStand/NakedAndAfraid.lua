@@ -202,16 +202,7 @@ NakedAndAfraid.Render = function()
 end
 
 NakedAndAfraid.spawns = {
-{xcell = 36, ycell = 35, x = 265, y = 142}, -- south muldraugh forest
-{xcell = 33, ycell = 22, x = 283, y = 165}, -- Isolated Areas, Cabin by the Lake, West of West Point ID:652
-{xcell = 45, ycell = 24, x = 132, y = 24}, -- Isolated Areas, Cabin east of West Point ID:653
-{xcell = 32, ycell = 29, x = 67, y = 75}, -- Isolated Areas, Forest Cabin, Western Woods ID:654
-{xcell = 37, ycell = 29, x = 142, y = 254}, -- Isolated Areas, Forest Cabin, near Dixie ID:655
-{xcell = 14, ycell = 24, x = 47, y = 28}, -- Isolated Areas,Extremely Isolated Camping cabin ID:656
-{xcell = 38, ycell = 30, x = 180, y = 290}, -- Isolated Areas,Isolated Forest House ID:657
-{xcell = 31, ycell = 34, x = 45, y = 96}, -- Isolated Areas,Forest Shack between Rosewood and Muldraugh ID:658
-{xcell = 41, ycell = 29, x = 173, y = 220}, -- Isolated Areas,Muldraugh Campgrounds ID:659
-{xcell = 36, ycell = 35, x = 265, y = 142}, -- Isolated Areas,South Muldraugh Cabin ID:679{xcell = 41, ycell = 17, x = 242, y = 115}, -- Valley Station,  vacant store ID:87
+{xcell = 41, ycell = 17, x = 242, y = 115}, -- Valley Station,  vacant store ID:87
 {xcell = 39, ycell = 23, x = 159, y = 12}, -- West Point,  vacant store  ID:115
 {xcell = 38, ycell = 23, x = 259, y = 136}, -- West Point,  vacant store ID:157
 {xcell = 35, ycell = 31, x = 109, y = 164}, -- Muldraugh,  vacant storefront ID:229
@@ -220,13 +211,17 @@ NakedAndAfraid.spawns = {
 {xcell = 35, ycell = 33, x = 127, y = 247}, -- Muldraugh,  vacant store ID:263
 {xcell = 35, ycell = 34, x = 110, y = 117}, -- Muldraugh,  vacant store ID:269
 {xcell = 35, ycell = 34, x = 109, y = 150}, -- Muldraugh,  vacant store 1 ID:273
-{xcell = 35, ycell = 34, x = 109, y = 158} -- Muldraugh,  vacant store 2 ID:274
-
+{xcell = 35, ycell = 34, x = 109, y = 158}, -- Muldraugh,  vacant store 2 ID:274
+{xcell = 39, ycell = 29, x = 59, y = 106}, -- Dixie, vacant trailer
+{xcell = 19, ycell = 17, x = 111, y = 217}, -- Riverside, vacant house
+{xcell = 26, ycell = 38, x = 249, y = 156}, -- Rosewood, vacant house
+{xcell = 38, ycell = 22, x = 222, y = 281}, -- Westpointe, vacant house
+{xcell = 36, ycell = 33, x = 111, y = 120} -- muldraugh, vacant house
 }
 
 
 
-local spawnselection = ZombRand(19)+1;
+local spawnselection = ZombRand(15)+1;
 local xcell = NakedAndAfraid.spawns[spawnselection].xcell;
 local ycell = NakedAndAfraid.spawns[spawnselection].ycell;
 local x = NakedAndAfraid.spawns[spawnselection].x;
