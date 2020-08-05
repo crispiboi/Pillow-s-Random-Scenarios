@@ -327,8 +327,8 @@ local options= {}
 		options:updateFromLua();
 		options:applySettings();
 		SandboxVars.TimeSinceApo =  getSandboxOptions():getTimeSinceApo();
-		SandboxVars.WaterShutModifier = 0;
-		SandboxVars.ElecShutModifier = 0;
+		SandboxVars.WaterShutModifier = 1;
+		SandboxVars.ElecShutModifier = 1;
 				
 	else 
 		SandboxVars = require "Sandbox/Apocalypse"

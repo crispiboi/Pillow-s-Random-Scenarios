@@ -212,7 +212,7 @@ NakedAndAfraid.spawns = {
 {xcell = 35, ycell = 34, x = 110, y = 117}, -- Muldraugh,  vacant store ID:269
 {xcell = 35, ycell = 34, x = 109, y = 150}, -- Muldraugh,  vacant store 1 ID:273
 {xcell = 35, ycell = 34, x = 109, y = 158}, -- Muldraugh,  vacant store 2 ID:274
-{xcell = 39, ycell = 29, x = 59, y = 106}, -- Dixie, vacant trailer
+{xcell = 39, ycell = 29, x = 59, y = 103}, -- Dixie, vacant trailer
 {xcell = 19, ycell = 17, x = 111, y = 217}, -- Riverside, vacant house
 {xcell = 26, ycell = 38, x = 249, y = 156}, -- Rosewood, vacant house
 {xcell = 38, ycell = 22, x = 222, y = 281}, -- Westpointe, vacant house

@@ -101,13 +101,13 @@ local options= {}
 		options:updateFromLua();
 		options:applySettings();
 		SandboxVars.TimeSinceApo =  getSandboxOptions():getTimeSinceApo();
-		SandboxVars.WaterShutModifier = 0;
-		SandboxVars.ElecShutModifier = 0;
+		SandboxVars.WaterShutModifier = ZombRand(0,14);
+		SandboxVars.ElecShutModifier = ZombRand(0,14);
 		
 	else 
 		SandboxVars = require "Sandbox/SixMonthsLater"
-		SandboxVars.WaterShutModifier = 0;
-		SandboxVars.ElecShutModifier = 0;
+		SandboxVars.WaterShutModifier = 1;
+		SandboxVars.ElecShutModifier = 1;
 
 
 	end

@@ -30,9 +30,15 @@ if ModOptions and ModOptions.getInstance then
     end
   end
 
-  function opt1:onUpdateMainMenu(val)
-    self:resetLua() -- Reload all mods.
-  end
+  --function opt1:onUpdateMainMenu(val)
+  --  self:resetLua() -- Reload all mods.
+  --  opt1:set(true)
+  --end
+
+  --function opt2:onUpdateMainMenu(val)
+  --  self:resetLua() -- Reload all mods.
+  --  opt2:set(true)
+  --end
 
 end
 
