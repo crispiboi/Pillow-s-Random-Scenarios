@@ -9,33 +9,36 @@ end
 
 EnterAreaChallenge.OnGameStart = function()
 
-    		
 Events.OnGameStart.Add(EnterAreaChallenge.OnNewGame);
 
 end
 
 
 EnterAreaChallenge.OnNewGame = function()
---moved this stuff from onGameStart. 
 local pl = getPlayer();
 		--check if it's a new game
 
 		print(pl:getHoursSurvived());
 		if getPlayer():getHoursSurvived()<=1 then
-			--:getMinutes() <= 1 
-			--and getGameTime():getHour() == getGameTime():getStartTimeOfDay()
-			--and getGameTime():getYear() == getGameTime():getStartYear() 
-
 			local inv = pl:getInventory();
-			local bag = pl:getInventory():AddItem("Base.Bag_NormalHikingBag");
 
+			--reset inventory
+			pl:clearWornItems();
+		   	inv:clear();
+		   	inv:AddItem("Base.KeyRing");
+			local bag = pl:getInventory():AddItem("Base.Bag_NormalHikingBag");
+			pl:setClothingItem_Back(bag);
+			belt = inv:AddItem("Base.Belt2");
+			pl:setWornItem(belt:getBodyLocation(),belt);
+			
 			--player stuff 
 			--give player a hoodie and hat
-			EnterAreaChallenge.clothes = {"Base.HoodieDOWN_WhiteTINT","Base.Hat_Beany"}
+			EnterAreaChallenge.clothes = {"Base.HoodieDOWN_WhiteTINT","Base.Hat_Beany","Base.TrousersMesh_DenimLight","Base.Shoes_ArmyBoots","Base.Socks_Long","Base.Underpants_RedSpots"}
 			for i , item in pairs(EnterAreaChallenge.clothes) do
 				clothes = inv:AddItem(item);
 				pl:setWornItem(clothes:getBodyLocation(), clothes);
 			end
+			
 
 
 
@@ -75,65 +78,18 @@ local pl = getPlayer();
 			--wear bag
 			pl:setClothingItem_Back(bag);
 		else end	
---getSandboxOptions():set("FoodLoot",4); 
 
 end
 
 
 EnterAreaChallenge.OnInitWorld = function()
---SandboxVars = require "Sandbox/SixMonthsLater"
 
-	--SandboxVars.StartMonth = 7;
-	--Events.OnGameStart.Add(EnterAreaChallenge.setSandBoxVars);
 	Events.OnGameStart.Add(EnterAreaChallenge.OnGameStart);
 	EnterAreaChallenge.setSandBoxVars();
 
 end
 
 EnterAreaChallenge.setSandBoxVars = function()
-local options= {}
-	if getSandboxPresets():indexOf("pillow")
-		
-		then
-		options = getSandboxOptions();
-		options:loadPresetFile("pillow");
-		options:toLua();
-		options:updateFromLua();
-		options:applySettings();
-		SandboxVars.TimeSinceApo =  getSandboxOptions():getTimeSinceApo();
-		SandboxVars.WaterShutModifier = ZombRand(0,14);
-		SandboxVars.ElecShutModifier = ZombRand(0,14);
-		
-	else 
-		SandboxVars = require "Sandbox/SixMonthsLater"
-		SandboxVars.WaterShutModifier = 1;
-		SandboxVars.ElecShutModifier = 1;
-
-
-	end
-
-		--start time is returned as the index of the list, not the time.
-		--7 am is 1
-		--9am is 2, noon is 3, 2 pm is 4, 5pm is 5, 9pm is 6, 12am is 7, 2am is 8,5am is 9
-		hourvalue = 7;
-		hourset = options:getOptionByName("StartTime"):getValue();
-		if hourset == 1 then return 
-		elseif hourset == 2 then hourvalue = 9;
-		elseif hourset == 3 then hourvalue = 12;
-		elseif hourset == 4 then hourvalue = 14;
-		elseif hourset == 5 then hourvalue = 17;
-		elseif hourset == 6 then hourvalue = 21;
-		elseif hourset == 7 then hourvalue = 0;
-		elseif hourset == 8 then hourvalue = 2;
-		else hourvalue = 5 ;
-		end 
-		
-		gt = getGameTime();
-		gt:setTimeOfDay(hourvalue);
-		gt:setDay(getSandboxOptions():getOptionByName("StartDay"):getValue());
-		gt:setStartDay(getSandboxOptions():getOptionByName("StartDay"):getValue());
-		gt:setMonth(getSandboxOptions():getOptionByName("StartMonth"):getValue()-1); -- minus 1 seems to fix the problem
-
 
 end
 
@@ -178,8 +134,7 @@ EnterAreaChallenge.ycell = ycell;
 EnterAreaChallenge.x = x;
 EnterAreaChallenge.y = y;
 EnterAreaChallenge.z = 0;
-
-EnterAreaChallenge.hourOfDay = 7;
+EnterAreaChallenge.enableSandbox = true;
 
 
 Events.OnChallengeQuery.Add(EnterAreaChallenge.Add)

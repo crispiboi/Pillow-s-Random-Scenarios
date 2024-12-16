@@ -506,28 +506,9 @@ local pl = getPlayer();
 
 			pl:setClothingItem_Back(bag);
 
-
-
-			--v2 new hordes
-			--v3 new dire selection + new brutal start
-			--direchance = ZombRand(5)+1;
-			--direselect = ZombRand(5)+1;
-
-
-			--if direstart then
-
-			--direchance = 1; --testing force dire on
-			--direselect = 1; --testing force dire on
-
 			pillowmod.building = pl:getCurrentSquare():getRoom():getBuilding();
 			pillowmod.direloops = ZombRand(10,20);
 			pillowmod.normalloops = ZombRand(5,10);	
-
-
-
-			--print("dire chance =" .. direchance .. " direselect=" .. direselect);
-			--print("params- normal loops:" .. normalloops .. " dire loops:" .. direloops);
-
 
 			if pillowmod.direstart or pillowmod.brutalstart then
 				print("intiial dire/brutal fires");
@@ -549,7 +530,6 @@ local pl = getPlayer();
 			end 
 
 		
-		
 
 		else end	
 
@@ -559,57 +539,13 @@ end --end new game function
 
 
 FireSale.OnInitWorld = function()
---SandboxVars = require "Sandbox/SixMonthsLater"
 
-	--SandboxVars.StartMonth = 7;
 	Events.OnGameStart.Add(FireSale.OnGameStart);
 	FireSale.setSandBoxVars();
 
 end
 
 FireSale.setSandBoxVars = function()
-local options= {}
-	if getSandboxPresets():indexOf("pillow")
-		
-		then
-		options = getSandboxOptions();
-		options:loadPresetFile("pillow");
-		options:toLua();
-		options:updateFromLua();
-		options:applySettings();
-		SandboxVars.TimeSinceApo =  getSandboxOptions():getTimeSinceApo();
-		SandboxVars.WaterShutModifier = 1;
-		SandboxVars.ElecShutModifier = 1
-		
-	else 
-		SandboxVars = require "Sandbox/Apocalypse"
-		
-
-
-	end
-
-		--start time is returned as the index of the list, not the time.
-		--7 am is 1
-		--9am is 2, noon is 3, 2 pm is 4, 5pm is 5, 9pm is 6, 12am is 7, 2am is 8,5am is 9
-		hourvalue = 7;
-		hourset = options:getOptionByName("StartTime"):getValue();
-		if hourset == 1 then return 
-		elseif hourset == 2 then hourvalue = 9;
-		elseif hourset == 3 then hourvalue = 12;
-		elseif hourset == 4 then hourvalue = 14;
-		elseif hourset == 5 then hourvalue = 17;
-		elseif hourset == 6 then hourvalue = 21;
-		elseif hourset == 7 then hourvalue = 0;
-		elseif hourset == 8 then hourvalue = 2;
-		else hourvalue = 5 ;
-		end 
-		
-		gt = getGameTime();
-		gt:setTimeOfDay(hourvalue);
-		gt:setDay(getSandboxOptions():getOptionByName("StartDay"):getValue());
-		gt:setStartDay(getSandboxOptions():getOptionByName("StartDay"):getValue());
-		gt:setMonth(getSandboxOptions():getOptionByName("StartMonth"):getValue()-1); -- minus 1 seems to fix the problem
-
 
 end
 
@@ -791,10 +727,7 @@ FireSale.ycell = ycell;
 FireSale.x = x;
 FireSale.y = y;
 FireSale.z = z;
-
-
-FireSale.hourOfDay = 7;
-
+FireSale.enableSandbox = true;
 
 Events.OnChallengeQuery.Add(FireSale.Add)
 

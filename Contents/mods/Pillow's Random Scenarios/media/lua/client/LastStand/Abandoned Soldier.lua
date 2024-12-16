@@ -297,67 +297,18 @@ local pl = getPlayer();
 			pl:setClothingItem_Back(bag);
 
 			AbandonedSoldier.SpawnHordes();
-		
-
 			
 		else end	
---createHordeFromTo(11848, 9804, 11848 , 9804, 250); --testing one
-
-
 
 end
 
 
 AbandonedSoldier.OnInitWorld = function()
---SandboxVars = require "Sandbox/SixMonthsLater"
-
-	--SandboxVars.StartMonth = 7;
-
 	Events.OnGameStart.Add(AbandonedSoldier.OnGameStart);
 	AbandonedSoldier.setSandBoxVars();
 end
 
 AbandonedSoldier.setSandBoxVars = function()
-local options= {}
-	if getSandboxPresets():indexOf("pillow")
-		
-		then
-		options = getSandboxOptions();
-		options:loadPresetFile("pillow");
-		options:toLua();
-		options:updateFromLua();
-		options:applySettings();
-		SandboxVars.TimeSinceApo =  getSandboxOptions():getTimeSinceApo();
-		SandboxVars.WaterShutModifier = 1;
-		SandboxVars.ElecShutModifier = 1;
-	else 
-		SandboxVars = require "Sandbox/Apocalypse"
-		
-
-
-	end
-
-		--start time is returned as the index of the list, not the time.
-		--7 am is 1
-		--9am is 2, noon is 3, 2 pm is 4, 5pm is 5, 9pm is 6, 12am is 7, 2am is 8,5am is 9
-		hourvalue = 7;
-		hourset = options:getOptionByName("StartTime"):getValue();
-		if hourset == 1 then return 
-		elseif hourset == 2 then hourvalue = 9;
-		elseif hourset == 3 then hourvalue = 12;
-		elseif hourset == 4 then hourvalue = 14;
-		elseif hourset == 5 then hourvalue = 17;
-		elseif hourset == 6 then hourvalue = 21;
-		elseif hourset == 7 then hourvalue = 0;
-		elseif hourset == 8 then hourvalue = 2;
-		else hourvalue = 5 ;
-		end 
-		
-		gt = getGameTime();
-		gt:setTimeOfDay(hourvalue);
-		gt:setDay(getSandboxOptions():getOptionByName("StartDay"):getValue());
-		gt:setStartDay(getSandboxOptions():getOptionByName("StartDay"):getValue());
-		gt:setMonth(getSandboxOptions():getOptionByName("StartMonth"):getValue()-1); -- minus 1 seems to fix the problem
 
 
 end
@@ -402,9 +353,7 @@ AbandonedSoldier.ycell = ycell;
 AbandonedSoldier.x = x;
 AbandonedSoldier.y = y;
 AbandonedSoldier.z = 0;
-
-
-AbandonedSoldier.hourOfDay = 7;
+AbandonedSoldier.enableSandbox = true;
 
 
 Events.OnChallengeQuery.Add(AbandonedSoldier.Add)

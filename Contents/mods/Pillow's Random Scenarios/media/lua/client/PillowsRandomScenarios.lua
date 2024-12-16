@@ -30,16 +30,6 @@ if ModOptions and ModOptions.getInstance then
     end
   end
 
-  --function opt1:onUpdateMainMenu(val)
-  --  self:resetLua() -- Reload all mods.
-  --  opt1:set(true)
-  --end
-
-  --function opt2:onUpdateMainMenu(val)
-  --  self:resetLua() -- Reload all mods.
-  --  opt2:set(true)
-  --end
-
 end
 
 
@@ -49,3 +39,54 @@ Events.OnGameStart.Add(function()
   print("always dire = ", PillowModOptions.options.alwaysdire)
   print("always brutal = ", PillowModOptions.options.alwaysbrutal)
 end)
+
+
+--2024-12-16 add this stuff from Immersive Scenarios for sandbox settings
+function NewGameScreen:clickPlay()
+    self:setVisible(false);
+
+    MainScreen.instance.charCreationProfession.previousScreen = "NewGameScreen";
+    getWorld():setGameMode(self.selectedItem.mode);
+
+    MainScreen.instance:setDefaultSandboxVars()
+
+    if self.selectedItem.mode == "Challenge" then
+        getWorld():setDifficulty("Hardcore");
+        LastStandData.chosenChallenge = self.selectedItem.challenge;
+        
+        if LastStandData.chosenChallenge and LastStandData.chosenChallenge.enableSandbox == true then                     
+            local worldName = LastStandData.chosenChallenge.id.."-"..ZombRand(100000)..ZombRand(100000)..ZombRand(100000)..ZombRand(100000);
+            doChallenge(self.selectedItem.challenge);
+            getWorld():setWorld(sanitizeWorldName(worldName));
+            
+            local globalChallenge = LastStandData.chosenChallenge;
+            globalChallenge.OnInitWorld();
+            --Events.OnGameStart.Add(globalChallenge.OnGameStart); -- Direct call. Normally called by OnInitWorld()
+            
+            getWorld():setMap("DEFAULT")
+            MainScreen.instance.createWorld = true                  
+            MapSpawnSelect.instance:useDefaultSpawnRegion()
+            
+            getWorld():setGameMode("Sandbox")
+            MainScreen.instance.sandOptions:setVisible(true, self.joyfocus)
+    
+            return
+        end
+    end
+
+    orig_clickPlay(self)
+end
+
+local orig_onOptionMouseDown = SandboxOptionsScreen.onOptionMouseDown
+
+-- Override to back button for Sandbox Options
+function SandboxOptionsScreen:onOptionMouseDown(button, x, y)
+
+    if button.internal == "BACK" and LastStandData.chosenChallenge and LastStandData.chosenChallenge.enableSandbox == true then     
+        self:setVisible(false);
+        MainScreen.instance.soloScreen:setVisible(true, self.joyfocus)
+    else
+        orig_onOptionMouseDown(self, button, x, y)
+    end 
+    
+end
