@@ -41,6 +41,9 @@ Events.OnGameStart.Add(function()
 end)
 
 
+
+local orig_clickPlay = NewGameScreen.clickPlay
+
 --2024-12-16 add this stuff from Immersive Scenarios for sandbox settings
 function NewGameScreen:clickPlay()
     self:setVisible(false);
