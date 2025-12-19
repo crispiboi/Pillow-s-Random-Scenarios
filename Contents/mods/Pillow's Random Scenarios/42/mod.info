@@ -5,6 +5,7 @@ poster=poster.png
 modversion=42.0-1
 pzversion=42.0
 versionMin=41.60
+versionMax=42.12
 incompatible=
 author=pillow
 modurl=https://github.com/crispiboi/Pillow-s-Random-Scenarios
